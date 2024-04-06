@@ -1,0 +1,133 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    color: #fff;
+    font-size: 20px;
+    background-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('img.jpg'); 
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* Align children vertically */
+}
+
+.navbar {
+    background-color: rgb(27, 198, 72);
+    color: #f2f2f2;
+    padding: 14px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    margin-left: 20px;
+    font-size: 24px;
+}
+
+.navbar a {
+    display: inline-block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.container {
+    flex: 1; /* Occupy remaining vertical space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    color: aquamarine;
+    margin-bottom: 20px;
+}
+
+p {
+    color: #ddd;
+    margin-top: 20px;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin-top: 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+form {
+    max-width: 400px;
+    margin: 20px auto;
+}
+.care-list {
+    list-style-type: circle;
+    padding-left: 20px;
+    margin: 0;
+    text-align: left;
+    line-height: 1.5;
+}
+.care-list li {
+    margin-bottom: 10px;
+    line-height: 1;
+}
+.select2-container--default .select2-results__option {
+    color:black;
+}
+
+button {
+    margin-top: 10px;
+}
+.select2-container {
+    border: 4px solid #000; 
+    border-radius: 5px; 
+}
+
+.js-example-basic-single {
+    width: 100%;
+    font-size: 16px;
+    height: 40px;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+}
+
+.card {
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 20px;
+    max-width: 300px;
+}
+
+.card h2 {
+    color: #333;
+}
