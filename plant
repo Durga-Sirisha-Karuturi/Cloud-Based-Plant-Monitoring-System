@@ -1,0 +1,238 @@
+#define BLYNK_PRINT Serial
+#include "DHT.h"
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+
+char auth[] = "bo7xJbMZoN6VuYGW473bxC_PhFIO9WLO";  //Enter your Blynk Auth token
+char ssid[] = "POCO X3";  //Enter your WIFI SSID
+char pass[] = "manikanta09";  //Enter your WIFI Password
+
+DHT dht(13, DHT11); //(DHT sensor pin,sensor type)  D4 DHT11 Temperature Sensor
+BlynkTimer timer;
+
+int moisture_sensor_Analog =15;
+int moisture_senso_Pin = 12;
+int moisture_senso_Value = 0; 
+
+
+int relay1State = LOW;
+int pushButton1State = HIGH;
+int motorp=27; //D3 Relay
+
+const int trigPin = 32;
+const int echoPin = 33;
+
+#define SOUND_SPEED 0.034
+#define CM_TO_INCH 0.393701
+
+long duration;
+float distanceCm;
+float distanceInch;
+float distancefeet;
+
+int c=0;
+
+#define S0 12
+#define S1 14
+#define S2 16
+#define S3 4
+#define sensorOut 17
+
+int Rfr = 0;
+int Gfr = 0;
+int Bfr = 0;
+
+void setup() {
+   Serial.begin(9600);
+   pinMode(motorp, OUTPUT);
+   pinMode(trigPin, OUTPUT);
+   pinMode(echoPin, INPUT);
+   pinMode(S0, OUTPUT);
+   pinMode(S1, OUTPUT);
+   pinMode(S2, OUTPUT);
+   pinMode(S3, OUTPUT);
+   pinMode(sensorOut, INPUT);
+ 
+   digitalWrite(S0,HIGH);
+   digitalWrite(S1,HIGH);
+   Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
+   Serial.println("Blynk connect");
+   digitalWrite(motorp,HIGH);
+   dht.begin(); 
+
+}
+
+void TempSensor()
+{
+  float h = dht.readHumidity(); //dht.readHumidity() for read humidity
+  float t = dht.readTemperature(); // or dht.readTemperature(true) for Fahrenheit
+  float hif = dht.computeHeatIndex(t, h,false); // or dht.readTemperature(true) for Fahrenheit
+  if (isnan(h) || isnan(t)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+   
+  Blynk.virtualWrite(V2, h);  //V7 is for Humidity
+  Blynk.virtualWrite(V1, t); //V6 is for Temperature
+  Blynk.virtualWrite(V0, hif);//V8 is for Heat Index
+}
+int valu=0;
+int value=0;
+
+
+void moist(){
+  
+  moisture_senso_Value = digitalRead(moisture_senso_Pin);
+  value=analogRead(moisture_sensor_Analog);
+  value =(map(value, 0, 4024, 0, 100));
+
+//  value=value*-1;
+//  Serial.println(value);
+
+//  value = map(valu, 0, 1024, 0, 100);
+//  value = (value - 100) * -1;
+
+//  value = map(valu, 0, 1024, 0, 100);
+//  value = (value - 100) * -1;
+
+
+  Blynk.virtualWrite(V3, value);
+  if (value>=48 && c<=5) {
+
+    Serial.println("motor ON");
+    Blynk.logEvent("plant_notify","I need water..💦🪴");
+//    Blynk.notify("I need water..💦🪴");
+    c=c+1;
+    delay(3000);
+  }
+  if(value==50){
+//    Blynk.notify("Thank's for Food..?❤?");
+        Blynk.logEvent("plant_notif2","Thank's for Food..?❤?");
+
+    
+  }
+  int a = digitalRead(motorp); 
+//  Serial.println(a);
+
+  if(c==5 && value>=45 && a!=1){
+  if(value>=45){
+        Serial.println("Automatic WaterPump is Oning");
+        //Blynk.notify("Automatic WaterPump is Oning");
+        Blynk.logEvent("waterpump","Automatic WaterPump is Oning");
+
+        //WidgetLED LED(V5);
+        //LED.on();
+          digitalWrite(motorp, LOW);
+          delay(5000); 
+          digitalWrite(motorp, HIGH);
+          c=0;
+         // LED.on();
+   } 
+  
+}
+}
+
+BLYNK_WRITE(V4) {
+  int rel= param.asInt();
+  if(rel==1){
+    digitalWrite(motorp,LOW);
+    Serial.println("Automatic Waterpump swith on");
+  }
+  else
+  {
+    digitalWrite(motorp,HIGH);
+    Serial.println("Automatic Waterpump swith off");
+  }
+}
+
+
+
+void height()
+{
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  duration = pulseIn(echoPin, HIGH);
+  distanceCm = duration * SOUND_SPEED/2;
+
+  distanceInch = distanceCm * CM_TO_INCH;
+  distancefeet = distanceInch*0.0833333333;
+  Blynk.virtualWrite(V5, distancefeet);
+}
+
+void colorsensor()
+{
+  String kr="Healty";
+  digitalWrite(S2,LOW);
+  digitalWrite(S3,LOW);
+  Rfr = pulseIn(sensorOut, LOW);
+  delay(100);
+  Serial.print("R= ");
+  Serial.print(Rfr);
+  Serial.print(" ");
+  digitalWrite(S2,HIGH);
+  digitalWrite(S3,HIGH);
+  Gfr = pulseIn(sensorOut, LOW);
+  delay(100);
+  Serial.print("G= ");
+  Serial.print(Gfr);
+  Serial.print(" ");
+
+  digitalWrite(S2,LOW);
+  digitalWrite(S3,HIGH);
+  Bfr = pulseIn(sensorOut, LOW);
+  delay(100);
+  Serial.print("B= ");
+  Serial.print(Bfr);
+  Serial.print(" ");
+  delay(2000);
+  if((Gfr<36 && Rfr<25 && Bfr<25) || (Gfr>200 && Rfr>200 && Bfr>160))
+  {
+    kr="Invalid";
+    Serial.println("Invalid color");
+  }
+  else
+  {
+    
+    if(Gfr>Rfr && Gfr>Bfr)
+    {
+      kr="Healty";
+      Serial.println("Healty");
+    }
+    else
+    {
+      if((Gfr<70 && Rfr<50 && Bfr<75) || (Rfr<40 && Gfr<60 && Bfr<60))
+      {
+        kr="Dry leaf";
+        Serial.println("Dry leaf");
+      }
+      
+      else
+      {
+        if((Gfr>Rfr && Gfr>Bfr && Bfr>Rfr) || (Gfr>Rfr && Gfr>Bfr && Rfr>Bfr))
+        {
+          kr="Un Healty";
+          Serial.println("Un Healty");
+        }
+  
+      }
+    }
+  }
+  
+  Blynk.virtualWrite(V6, kr);
+
+}
+void loop() {
+
+Blynk.run();
+height();
+TempSensor();
+moist();
+colorsensor();
+
+  
+}
