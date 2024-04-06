@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Health Suggestion</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <h1 style="color: aquamarine;">Cloud Based Plant Monitoring System</h1>
+    <h2>Plant Health Suggestion</h2>
+
+    <form id="healthForm">
+        <label for="plantType">Plant Type:</label>
+        <select id="plantType" name="plantType" class="js-example-basic-single">
+            <option value="" disabled selected>Select a plant type...</option>
+            <option value="Daisies">Daisies</option>
+            <option value="Lavender">Lavender</option>
+            <option value="Lily">Lily</option>
+            <option value="Marigolds">Marigolds</option>
+            <option value="Orchids">Orchids</option>
+            <option value="Roses">Roses</option>
+            <option value="Sunflower">Sunflower</option>
+            <option value="Tomato">Tomato</option>
+            <option value="Tulips">Tulips</option>
+        </select>
+
+        <label for="healthStatus">Health Status:</label>
+        <select id="healthStatus" name="healthStatus">
+            <option value="DryLeaves">Dry Leaves</option>
+            <option value="Unhealthy">Unhealthy</option>
+        </select>
+
+        <button type="button" onclick="getSuggestion()">Get Suggestion</button>
+    </form>
+
+    <div id="healthSuggestion"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+    $('.js-example-basic-single').select2({
+        placeholder: "Search for a plant type..."
+    });
+});
+
+        var careSuggestions = {
+    Roses: {
+        DryLeaves: {
+            care: ["Regularly prune dead or dry leaves to encourage new growth.", "Ensure consistent watering, especially during dry periods.", "Apply organic mulch around the base to retain moisture."],
+            fertilizers: ["Rose Food", "Miracle-Gro Water Soluble Rose Plant Food", "Jobe's Organics Rose & Flower Fertilizer", "Dr. Earth Organic & Natural Rose & Flower Fertilizer", "Espoma Organic Rose Tone"],
+            pesticides: ["Bayer Advanced 3-in-1 Insect, Disease, and Mite Control", "Ortho Insect, Mite & Disease 3-in-1 Control", "Bonide Rose Rx 3-in-1 Concentrate", "Ferti-lome Triple Action Insecticide, Fungicide & Miticide", "Monterey Rose & Flower Insect Spray"]
+        },
+        Unhealthy: {
+            care: ["Maintain proper sun exposure; roses need adequate sunlight for optimal health.", "Keep an eye on discoloration or wilting for early detection of any health issues.", "Watch for diseases like black spot and treat promptly with fungicides."],
+            fertilizers: ["Rose Food", "Scotts Miracle-Gro Shake 'n Feed Rose & Bloom Plant Food", "Jobe's Organics Rose & Flower Fertilizer", "Dr. Earth Organic & Natural Rose & Flower Fertilizer", "Espoma Organic Rose Tone"],
+            pesticides: ["Safer Brand Insect Killing Soap Concentrate", "Ortho Insect, Mite & Disease 3-in-1 Control", "Bonide Rose Rx 3-in-1 Concentrate", "Ferti-lome Triple Action Insecticide, Fungicide & Miticide", "Monterey Rose & Flower Insect Spray"]
+        }
+    },
+    Tulips: {
+        DryLeaves: {
+            care: ["Allow tulip foliage to die back naturally after flowering to nourish the bulbs.", "Plant tulip bulbs at the correct depth to protect them from extremes in temperature and drying out.", "Apply a layer of mulch to retain soil moisture and regulate temperature around the bulbs."],
+            fertilizers: ["Osmocote Smart-Release Plant Food Flower & Vegetable", "Miracle-Gro Water Soluble All Purpose Plant Food", "Jobe's Organics Bulb Food", "Espoma Organic Bulb-tone Bulb & Flower Food", "Dr. Earth Flower Girl Bud & Bloom Booster"],
+            pesticides: ["Bonide Neem Oil Fungicide, Miticide & Insecticide Ready to Use", "Monterey BT Biological Insecticide Ready to Use", "Bonide Rx 3-in-1 Concentrate", "Bayer Advanced 3-in-1 Insect, Disease, and Mite Control Ready to Use", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use"]
+        },
+        Unhealthy: {
+            care: ["Be vigilant against diseases such as tulip fire and promptly remove infected plants to prevent the spread.", "Avoid overcrowding tulip plants to promote good air circulation, reducing the risk of fungal infections.", "Plant tulips in well-draining soil to prevent waterlogged conditions that can lead to root rot."],
+            fertilizers: ["Schultz All Purpose Liquid Plant Food", "Jack's Classic All Purpose 20-20-20 Water Soluble Plant Food", "Jobe's Organics Bulb Food", "Espoma Organic Bulb-tone Bulb & Flower Food", "Dr. Earth Flower Girl Bud & Bloom Booster"],
+            pesticides: ["Garden Safe Brand Fungicide3 Concentrate", "Bayer Advanced Natria Insect, Disease, and Mite Control Ready to Use", "Bonide Rx 3-in-1 Concentrate", "Bayer Advanced 3-in-1 Insect, Disease, and Mite Control Ready to Use", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use"]
+        }
+    },
+    Lavender: {
+        DryLeaves: {
+            care: ["Apply a thin layer of gravel or sand around the base of the plant to retain moisture and suppress weed growth.", "Ensure lavenders are planted in well-draining soil to prevent waterlogging and root suffocation.", "Provide lavenders with full sunlight for at least six hours a day to maintain their health and vigor."],
+            fertilizers: ["Espoma Organic Soil Acidifier", "Dr. Earth Organic & Natural Flower Girl Bud & Bloom Booster", "Miracle-Gro Water Soluble Bloom Booster Flower Food", "Jobe's Organics Bone Meal Soil Amendment", "Osmocote Smart-Release Plant Food Flower & Vegetable"],
+            pesticides: ["Monterey BT Biological Insecticide Ready to Use", "Bonide Neem Oil Fungicide, Miticide & Insecticide Ready to Use", "Garden Safe Brand Insecticidal Soap Insect Killer Ready to Use", "Bayer Advanced Natria Insect, Disease, and Mite Control Ready to Use", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use"]
+        },
+        Unhealthy: {
+            care: ["Protect the lavender from intense afternoon sun by providing partial shade during the hottest part of the day.", "Reduce watering frequency and volume to prevent further stress on the plant and promote root recovery.", "Test the soil pH and adjust if necessary to maintain a slightly alkaline environment, which is ideal for lavender growth."],
+            fertilizers: ["Espoma Organic Perlite", "Hoffman Horticultural Perlite", "Miracle-Gro Perlite", "Vigoro Perlite", "Black Gold Perlite"],
+            pesticides: ["Agfabric 40% Sunblock Shade Cloth", "EasyShade Black Shade Cloth", "Coolaroo Shade Fabric", "WindscreenSupplyCo Black Shade Cloth", "Alion Home Sunblock Shade Cloth"]
+        }
+    },
+    Sunflower: {
+        DryLeaves: {
+            care: ["Ensure sunflowers receive full sun exposure for at least 6-8 hours daily to promote healthy growth and blooming.", "Provide well-draining soil to prevent waterlogging and root rot.", "Water sunflowers deeply but infrequently, allowing the soil to dry out slightly between watering sessions.", "Deadhead spent flowers regularly to encourage continuous blooming and prevent seed formation.", "Support tall sunflower varieties with stakes or trellises to prevent them from toppling over in strong winds."],
+            fertilizers: ["Miracle-Gro Water Soluble All Purpose Plant Food", "Espoma Organic Flower-tone Plant Food", "Jobe's Organics Bulb Food", "Osmocote Smart-Release Plant Food Flower & Vegetable", "Dr. Earth Organic & Natural Flower Girl Bud & Bloom Booster"],
+            pesticides: ["Bonide Neem Oil Fungicide, Miticide & Insecticide Ready to Use", "Monterey Garden Insect Spray with Spinosad Concentrate", "Bayer Advanced Dual Action Rose & Flower Insect Killer Ready to Use", "BioAdvanced 3-in-1 Insect, Disease & Mite Control Concentrate", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use"]
+        },
+        Unhealthy: {
+            care: ["Monitor for signs of sunflower diseases such as powdery mildew, rust, and downy mildew, and treat promptly with appropriate fungicides.", "Prevent water stagnation around the base of sunflowers by providing adequate drainage to reduce the risk of root diseases.", "Inspect sunflowers for common pests like aphids, caterpillars, and thrips, and control infestations using insecticidal soaps or neem oil sprays.", "Avoid overhead watering to prevent fungal infections; instead, water at the base of the plants early in the morning to allow foliage to dry quickly.", "Space sunflower plants properly to promote good air circulation and reduce the risk of foliar diseases."],
+            fertilizers: ["Scotts Miracle-Gro Shake 'n Feed Continuous Release All Purpose Plant Food", "Jack's Classic All Purpose 20-20-20 Water Soluble Plant Food", "Espoma Organic Garden-tone Herb & Vegetable Food", "Jobe's Organics Vegetable & Tomato Granular Plant Food", "Dr. Earth Organic & Natural Tomato, Vegetable & Herb Fertilizer"],
+            pesticides: ["Bonide Systemic Insect Control Granules", "Bayer Advanced Dual Action Rose & Flower Insect Killer Ready to Use", "Ortho BugClear Insect Killer for Lawns & Landscapes Concentrate", "BioAdvanced Complete Insect Killer for Soil & Turf Concentrate", "Monterey B.t. Biological Insecticide Concentrate"]
+        }
+    },
+    Marigolds: {
+        DryLeaves: {
+            care: ["Plant marigolds in well-draining soil enriched with organic matter to promote healthy root development.", "Deadhead spent flowers regularly to encourage continuous blooming throughout the growing season.", "Mulch around the base of marigold plants to conserve moisture, suppress weeds, and regulate soil temperature."],
+            fertilizers: ["Espoma Organic Flower-tone Plant Food", "Jobe's Organics Flower & Rose Granular Fertilizer", "Miracle-Gro Water Soluble Flower Food", "Dr. Earth Organic & Natural Flower Girl Bud & Bloom Booster", "FoxFarm Happy Frog All-Purpose Fertilizer"],
+            pesticides: ["Bonide Pyrethrin Garden Insect Spray Concentrate", "Monterey Garden Insect Spray with Spinosad Concentrate", "Bayer Advanced Dual Action Rose & Flower Insect Killer Ready to Use", "BioAdvanced 3-in-1 Insect, Disease & Mite Control Concentrate", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use"]
+        },
+        Unhealthy: {
+            care: ["Ensure proper air circulation around marigold plants to prevent fungal diseases; avoid overcrowding.", "Water marigolds at the base of the plants early in the morning to allow foliage to dry quickly and reduce the risk of fungal infections.", "Inspect marigolds regularly for signs of pests such as aphids, whiteflies, and spider mites; treat infestations promptly with insecticidal soap or neem oil."],
+            fertilizers: ["Espoma Organic Tomato-tone Tomato & Vegetable Food", "Jobe's Organics Vegetable & Tomato Granular Plant Food", "Miracle-Gro Water Soluble Tomato Plant Food", "Dr. Earth Organic & Natural Tomato, Vegetable & Herb Fertilizer", "FoxFarm Happy Frog Tomato & Vegetable Fertilizer"],
+            pesticides: ["Bonide Captain Jack's Deadbug Brew Concentrate", "Bayer Advanced Vegetable & Garden Insect Spray Concentrate", "Ortho Insect Killer for Lawns & Gardens Concentrate", "BioAdvanced Fruit, Citrus & Vegetable Insect Control Concentrate", "Monterey Garden Insect Spray with Spinosad Concentrate"]
+        }
+    },
+    Daisies: {
+        DryLeaves: {
+            care: ["Plant daisies in well-draining soil amended with compost to improve soil structure and fertility.", "Water daisies deeply but infrequently, allowing the soil to dry slightly between watering sessions to prevent root rot.", "Deadhead spent flowers regularly to promote continuous blooming and prevent seed formation."],
+            fertilizers: ["Espoma Organic Flower-tone Plant Food", "Jobe's Organics Flower & Rose Granular Fertilizer", "Miracle-Gro Water Soluble Flower Food", "Dr. Earth Organic & Natural Flower Girl Bud & Bloom Booster", "FoxFarm Happy Frog All-Purpose Fertilizer"],
+            pesticides: ["Bonide Pyrethrin Garden Insect Spray Concentrate", "Monterey Garden Insect Spray with Spinosad Concentrate", "Bayer Advanced Dual Action Rose & Flower Insect Killer Ready to Use", "BioAdvanced 3-in-1 Insect, Disease & Mite Control Concentrate", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use"]
+        },
+        Unhealthy: {
+            care: ["Ensure daisies receive adequate sunlight for healthy growth and flowering; provide partial shade during intense afternoon heat if necessary.", "Monitor for signs of diseases such as powdery mildew and rust, and treat promptly with appropriate fungicides.", "Inspect daisies regularly for common pests like aphids and thrips; control infestations with insecticidal soap or neem oil sprays."],
+            fertilizers: ["Espoma Organic Tomato-tone Tomato & Vegetable Food", "Jobe's Organics Vegetable & Tomato Granular Plant Food", "Miracle-Gro Water Soluble Tomato Plant Food", "Dr. Earth Organic & Natural Tomato, Vegetable & Herb Fertilizer", "FoxFarm Happy Frog Tomato & Vegetable Fertilizer"],
+            pesticides: ["Bonide Captain Jack's Deadbug Brew Concentrate", "Bayer Advanced Vegetable & Garden Insect Spray Concentrate", "Ortho Insect Killer for Lawns & Gardens Concentrate", "BioAdvanced Fruit, Citrus & Vegetable Insect Control Concentrate", "Monterey Garden Insect Spray with Spinosad Concentrate"]
+        }
+    },
+    Orchids: {
+        DryLeaves: {
+            care: ["Provide orchids with bright, indirect light to prevent leaf scorching and promote healthy growth.", "Water orchids sparingly, allowing the potting medium to approach dryness before watering again to prevent root rot.", "Mist orchids regularly to maintain high humidity levels, especially in dry indoor environments."],
+            fertilizers: ["Schultz Orchid Liquid Plant Food", "Miracle-Gro Water Soluble Orchid Food", "Better Gro Orchid Plus Bloom Booster", "Espoma Organic Orchid-tone Plant Food", "Sun Bulb Better-Gro Orchid Better-Bloom Booster"],
+            pesticides: ["Bonide Systemic Houseplant Insect Control Granules", "Monterey Garden Insect Spray with Spinosad Concentrate", "Bayer Advanced Dual Action Rose & Flower Insect Killer Ready to Use", "BioAdvanced 3-in-1 Insect, Disease & Mite Control Concentrate", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use"]
+        },
+        Unhealthy: {
+            care: ["Inspect orchids regularly for signs of pests such as scale insects and spider mites; treat infestations with neem oil or insecticidal soap.", "Avoid overwatering orchids, as excessive moisture can lead to root rot and fungal diseases; water only when the potting medium is nearly dry.", "Provide good air circulation around orchids to prevent fungal infections and promote healthy growth."],
+            fertilizers: ["Grow More Orchid Food 20-20-20", "Sun Bulb Better-Gro Orchid Plus Bloom Booster", "Miracle-Gro Water Soluble Orchid Plant Food", "Schultz Orchid Liquid Plant Food", "Better Gro Orchid Better-Bloom Booster"],
+            pesticides: ["Bonide Neem Oil Fungicide, Miticide & Insecticide Ready to Use", "Monterey Garden Insect Spray with Spinosad Concentrate", "Bayer Advanced Dual Action Rose & Flower Insect Killer Ready to Use", "BioAdvanced 3-in-1 Insect, Disease & Mite Control Concentrate", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use"]
+        }
+    },
+    Tomato: {
+        DryLeaves: {
+            care: ["Water tomato plants deeply but infrequently, allowing the soil to dry slightly between watering sessions to prevent root rot.", "Mulch around tomato plants to retain soil moisture and suppress weed growth.", "Prune tomato plants regularly to remove yellowing or dead leaves and promote air circulation."],
+            fertilizers: ["Espoma Organic Tomato-tone Plant Food", "Jobe's Organics Vegetable & Tomato Granular Plant Food", "Miracle-Gro Water Soluble Tomato Plant Food", "Dr. Earth Organic & Natural Tomato, Vegetable & Herb Fertilizer", "FoxFarm Happy Frog Tomato & Vegetable Fertilizer"],
+            pesticides: ["Bonide Captain Jack's Deadbug Brew Concentrate", "Monterey Garden Insect Spray with Spinosad Concentrate", "Bayer Advanced Dual Action Rose & Flower Insect Killer Ready to Use", "BioAdvanced 3-in-1 Insect, Disease & Mite Control Concentrate", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use"]
+        },
+        Unhealthy: {
+            care: ["Monitor tomato plants for signs of diseases such as early blight and late blight; remove infected leaves promptly and treat with appropriate fungicides.", "Inspect tomato plants regularly for common pests like aphids and whiteflies; control infestations with insecticidal soap or neem oil sprays.", "Avoid overhead watering to prevent fungal diseases; water at the base of the plants early in the morning to allow foliage to dry quickly."],
+            fertilizers: ["Schultz All Purpose Liquid Plant Food", "Jack's Classic All Purpose 20-20-20 Water Soluble Plant Food", "Espoma Organic Garden-tone Herb & Vegetable Food", "Jobe's Organics Vegetable & Tomato Granular Plant Food", "Dr. Earth Organic & Natural Tomato, Vegetable & Herb Fertilizer"],
+            pesticides: ["Bonide Systemic Insect Control Granules", "Bayer Advanced Dual Action Rose & Flower Insect Killer Ready to Use", "Ortho BugClear Insect Killer for Lawns & Gardens Concentrate", "BioAdvanced Complete Insect Killer for Soil & Turf Concentrate", "Monterey B.t. Biological Insecticide Concentrate"]
+        }
+    },
+    Lily: {
+        DryLeaves: {
+            care: ["Plant lilies in well-draining soil enriched with organic matter to promote healthy root development.", "Water lilies deeply but infrequently, allowing the soil to dry slightly between watering sessions to prevent root rot.", "Apply a layer of mulch around lilies to conserve soil moisture and suppress weed growth."],
+            fertilizers: ["Espoma Bulb-tone Bulb & Flower Food", "Dr. Earth Organic & Natural Bulb Food", "Miracle-Gro Water Soluble Bloom Booster Flower Food", "Jobe's Organics Bulb Food", "Osmocote Smart-Release Plant Food Flower & Vegetable"],
+            pesticides: ["Monterey Garden Insect Spray with Spinosad Concentrate", "Bonide Neem Oil Fungicide, Miticide & Insecticide Ready to Use", "Garden Safe Brand Fungicide3 Concentrate", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use", "Bayer Advanced Natria Insect, Disease, and Mite Control Ready to Use"]
+        },
+        Unhealthy: {
+            care: ["Monitor lilies for signs of diseases such as botrytis and mosaic virus; remove infected plant parts promptly and treat with appropriate fungicides.", "Inspect lilies regularly for common pests like aphids, lily beetles, and spider mites; control infestations with insecticidal soap or neem oil sprays.", "Avoid overhead watering to prevent fungal diseases; water at the base of the plants early in the morning to allow foliage to dry quickly."],
+            fertilizers: ["Jobe's Organics Bone Meal Soil Amendment", "Espoma Organic Blood Meal All Purpose Plant Food", "Dr. Earth Organic & Natural Flower Girl Bud & Bloom Booster", "Miracle-Gro Water Soluble Bloom Booster Flower Food", "Osmocote Smart-Release Plant Food Flower & Vegetable"],
+            pesticides: ["Monterey Garden Insect Spray with Spinosad Concentrate", "Bonide Neem Oil Fungicide, Miticide & Insecticide Ready to Use", "Garden Safe Brand Fungicide3 Concentrate", "Ortho Flower, Fruit & Vegetable Insect Killer Ready to Use", "Bayer Advanced Natria Insect, Disease, and Mite Control Ready to Use"]
+        }
+    }
+};
+
+
+        function getSuggestion() {
+            var plantType = document.getElementById('plantType').value;
+            var healthStatus = document.getElementById('healthStatus').value;
+
+            var suggestion = getHealthSuggestion(plantType, healthStatus);
+
+            document.getElementById('healthSuggestion').innerHTML = suggestion;
+        }
+
+        function getHealthSuggestion(plantType, healthStatus) {
+            var suggestions = careSuggestions[plantType][healthStatus];
+
+            var html = "<h2 class='care-list' style='color: rgb(236, 181, 182);'>Care Instructions for " + plantType + " plants - " + healthStatus + "</h2><ul class='care-list'>";
+            suggestions.care.forEach(function(suggestion) {
+                html += "<li>" + suggestion + "</li>";
+            });
+            html += "</ul>";
+
+            html += "<h3 class='care-list' style='color:orange;'>Fertilizers</h3><ul class='care-list'>";
+            suggestions.fertilizers.forEach(function(fertilizer) {
+                html += "<li>" + fertilizer + "</li>";
+            });
+            html += "</ul>";
+
+            html += "<h3 class='care-list' style='color:orange;'>Pesticides</h3><ul class='care-list'>";
+            suggestions.pesticides.forEach(function(pesticide) {
+                html += "<li>" + pesticide + "</li>";
+            });
+            html += "</ul>";
+
+            return html;
+        }
+    </script>
+</body>
+</html>
